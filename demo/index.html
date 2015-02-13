@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="satelliteDemoApp">
+<head>
+    <meta charset="utf-8">
+    <title>angular-satellite demo app</title>
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+
+</head>
+<body>
+
+    <h1>Angular Satellite Library</h1>
+
+	<div ng-view></div>
+
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,demo}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/angular-satellite.js"></script>
+	<script src="scripts/home/HomeCtrl.js"></script>
+    <!-- endbuild -->
+</body>
+</html>
