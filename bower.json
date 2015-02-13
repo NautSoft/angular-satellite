@@ -1,17 +1,11 @@
 {
-	"name": "angular-satellite",
-	"version": "1.0.0",
+	"name": "angular-satellite-demo",
+	"version": "0.0.0",
 	"authors": [
 		"Michael Lodge-Paolini <maikuru@nautsoft.com>"
 	],
-	"description": "AngularJS Satellite Location Service using Two Line Elements (TLE) data and the SPG4 Algorythm",
+	"description": "Demo",
 	"keywords": [
-		"angular",
-		"angularJS",
-		"satellite",
-		"spg4",
-		"tle",
-		"angular-satellite"
 	],
 	"license": "MIT",
 	"ignore": [
@@ -22,7 +16,10 @@
 		"tests"
 	],
 	"dependencies": {
-		"angular":"~1.2.0"
+		"angular":"~1.2.0",
+		"angular-sanitize":"~1.2.0",
+		"angular-route":"~1.2.0",
+		"angular-touch":"~1.2.0"
 	},
 	"devDependencies": {
 	}
