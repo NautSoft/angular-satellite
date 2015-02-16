@@ -1,6 +1,6 @@
 'use strict';
 /**
- * @ngdoc factory
+ * @ngdoc service
  * @name angular-satellite
  * @description
  * # nsSatellite
@@ -8,7 +8,8 @@
  */
 
 angular.module('angular-satellite', [
-    'angular-satellite.twoLineElement'
+    'angular-satellite.twoLineElement',
+    'angular-satellite.geodetic'
 ])
     .factory('nsSatellite',['nsTwoLineElementFactory',
         function (nsTwoLineElementFactory) {

@@ -84,7 +84,7 @@ module.exports = function(grunt) {
         // Compile satellite and it's components for use in the demo and build
         concat: {
             options: {
-                separator: ';'
+                separator: "\n"
             },
             server: {
                 src: ['<%= config.src %>/*.js', '<%= config.src %>/**/*.js'],

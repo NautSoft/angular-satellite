@@ -1,6 +1,7 @@
 'use strict';
 
 /**
+ *
  * @ngdoc service
  * @name angular-satellite.nsTwoLineElementFactory
  * @description
@@ -203,6 +204,10 @@ angular.module('angular-satellite.twoLineElement', [])
                     _loadTLE(tleString);
                 }
             }
+
+            Geodetic.prototype.commonName = '';
+            Geodetic.prototype.lon = null;
+
 
             /**
              *
