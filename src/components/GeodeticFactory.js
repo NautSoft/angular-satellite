@@ -11,81 +11,94 @@
  * Component factory for use in nsSatellite.
  */
 angular.module('angular-satellite.geodetic', [])
-    .factory('nsGeodeticFactory', ['$log', 'NS_ELLIPSOID',
-        function ($log, ellipsoid) {
+    .factory('nsGeodeticFactory', ['$log', 'NS_ELLIPSOIDS',
+        function ($log, NS_ELLIPSOIDS) {
 
             /**
              * @name angular-satellite.Geodetic
              * @object
-             * @param lat   {number|null}
-             * @param lon   {number|null}
-             * @param alt   {number|null}
-             * @param theta {number|null}
+             * @param {number} latitude        [latitude  = 0.0]
+             * @param {number} longitude       [longitude = 0.0]
+             * @param {number} altitude        [altitude  = 0.0]
+             * @param {number} theta           [theta     = 0.0]
+             * @param {boolean} radians        [radians   = true]
+             * @param {boolean} metric         [metric    = true]
+             * @param {nsEllipsoid} ellipsoid  [ellipsoid = WSG84]
              *
              * @description
              * Geodetic object used for the location calculations
              *
              * @constructor
              */
-            function Geodetic(lat, lon, alt, theta) {
-                var _ellipsoid = ellipsoid.WGS84;
-                this.lat    = lat   || 0.0;
-                this.lon    = lon   || 0.0;
-                this.alt    = alt   || 0.0;
-                this.theta  = theta || 0.0;
+            function Geodetic(latitude, longitude, altitude, theta, radians, metric, ellipsoid) {
+
+                var _self      = this,
+                    _ellipsoid = ellipsoid || NS_ELLIPSOIDS.WGS84,
+                    _radians   = radians   || true,
+                    _metric    = metric    || true;
+
+                this.latitude  = latitude  || 0.0;
+                this.longitude = longitude || 0.0;
+                this.altitude  = altitude  || 0.0;
+                this.theta     = theta     || 0.0;
+
+                function _clone() {
+                    return new Geodetic(
+                        _self.latitude, _self.longitude, _self.altitude, _self.theta,
+                        _radians, _metric, _ellipsoid);
+                }
+
+                _self.clone = _clone;
             }
 
             /**
-             *
              * @type {number}
              */
-            Geodetic.prototype.lat   = null;
+            Geodetic.prototype.latitude   = null;
 
             /**
-             *
              * @type {number}
              */
-            Geodetic.prototype.lon   = null;
+            Geodetic.prototype.longitude  = null;
 
             /**
-             *
              * @type {number}
              */
-            Geodetic.prototype.alt   = null;
+            Geodetic.prototype.altitude   = null;
 
             /**
-             *
              * @type {number}
              */
-            Geodetic.prototype.theta = null;
+            Geodetic.prototype.theta      = null;
 
             /**
-             *
-             * @returns angular-satellite.geodetic
+             * @returns angular-satellite.Geodetic
+             * @constant
              */
-            Geodetic.prototype.clone = function() {
-                return new Geodetic(this.lat, this.lon, this.alt, this.theta);
-            };
+            Geodetic.prototype.clone = function() {};
 
-            Geodetic.prototype.getCartesian3 = function() {
-
-                return Cesium.Cartesian3.fromDegrees(this.lon, this.lat, this.alt);
-            };
-
-            Geodetic.prototype.getAsArray = function() {
-                $log.debug('Geodetic: getAsArray [' + this.lat+','+this.lon+','+this.alt+']');
-                return [this.lon, this.lat, Math.round(this.alt*1000)];
+            /**
+             * @returns {[longitude, latitude, altitude]}
+             * @constant
+             */
+            Geodetic.prototype.toArray = function() {
+                return [this.longitude, this.latitude, this.altitude];
             };
 
             // Public API here
             return {
                 /**
-                 *
-                 * @param obj {Geodetic|null}
-                 * @returns {museumOfFlightApp.GeodeticService.Geodetic}
+                 * @returns angular-satellite.Geodetic
+                 * @param {number} latitude        [latitude  = 0.0]
+                 * @param {number} longitude       [longitude = 0.0]
+                 * @param {number} altitude        [altitude  = 0.0]
+                 * @param {number} theta           [theta     = 0.0]
+                 * @param {boolean} radians        [radians   = true]
+                 * @param {boolean} metric         [metric    = true]
+                 * @param {nsEllipsoid} ellipsoid  [ellipsoid = WSG84]
                  */
-                get: function (obj) {
-                    return new Geodetic(obj);
+                get: function (latitude, longitude, altitude, theta, radians, metric, ellipsoid) {
+                    return new Geodetic(latitude, longitude, altitude, theta, radians, metric, ellipsoid);
                 }
             };
         }

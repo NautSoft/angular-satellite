@@ -14,7 +14,7 @@ angular.module('angular-satellite.twoLineElement', [])
             /**
              * @name angular-satellite.TwoLineElement
              * @object
-             * @param tleString {string|null}
+             * @param {string} tle [tle = '']
              *
              * @description
              * Parsed Two Line Element object.
@@ -23,7 +23,7 @@ angular.module('angular-satellite.twoLineElement', [])
              *
              * @constructor
              */
-            function TwoLineElement(tleString) {
+            function TwoLineElement(tle) {
 
                 var _name       = '',
                     _catNum     = 0,
@@ -43,8 +43,8 @@ angular.module('angular-satellite.twoLineElement', [])
                     _orbitNum   = 0;
 
                 /**
-                 *
                  * @returns {string}
+                 * @const
                  */
                 this.getCommonName = function() {
                     return _name;
@@ -52,6 +52,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getCatalogNumber = function() {
                     return _catNum;
@@ -59,6 +60,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getSetNumber = function() {
                     return _setNum;
@@ -66,6 +68,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {string}
+                 * @const
                  */
                 this.getDesignator = function() {
                     return _designator;
@@ -73,6 +76,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getYear = function() {
                     return _year;
@@ -80,6 +84,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getReferanceEpoch = function() {
                     return _refEpoch;
@@ -87,6 +92,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getInclination = function() {
                     return _incl;
@@ -94,6 +100,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getRightAscensionOfAscendingNode = function() {
                     return _raan;
@@ -101,6 +108,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getEccentricity = function() {
                     return _eccn;
@@ -108,6 +116,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getArgumentOfPerigee = function() {
                     return _argPer;
@@ -115,6 +124,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getMeanAnomaly = function() {
                     return _meanAn;
@@ -122,6 +132,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getMeanMotion = function() {
                     return _meanMo;
@@ -129,6 +140,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getDrag = function() {
                     return _drag;
@@ -136,6 +148,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getBahnLatitude = function() {
                     return _ndDot6;
@@ -143,6 +156,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getBStar = function() {
                     return _bStar;
@@ -150,21 +164,23 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @returns {number}
+                 * @const
                  */
                 this.getOrbitNumber = function() {
                     return _orbitNum;
                 };
 
                 /**
-                 * @param tleString {string}
-                 * @throws tleString must be a string
+                 * @param {string} tle - Two Line Element String
+                 * @throws tle must be a string
+                 * @private
                  */
-                function _loadTLE(tleString) {
-                    if (!angular.isString(tleString)) {
-                        throw 'TwoLineElement: tleString must be a string or null';
+                function _load(tle) {
+                    if (!angular.isString(tle)) {
+                        throw 'TwoLineElement: tle must be a string or null';
                     }
 
-                    var parts   = tleString.split('\n'),
+                    var parts   = tle.split('\n'),
                         line,
                         temp;
 
@@ -198,27 +214,29 @@ angular.module('angular-satellite.twoLineElement', [])
                     _orbitNum   =           Number(line.substring(63,68) );
                 }
 
-                this.loadTLE = _loadTLE;
+                this.load = _load;
 
-                if (angular.isDefined(tleString)) {
-                    _loadTLE(tleString);
+                if (angular.isDefined(tle)) {
+                    _load(tle);
                 }
             }
 
-            Geodetic.prototype.commonName = '';
-            Geodetic.prototype.lon = null;
-
+            /**
+             * @param {string} tle
+             * @const
+             */
+            TwoLineElement.prototype.load = function (tle) {};
 
             /**
-             *
              * @type {string}
+             * @const
              */
             TwoLineElement.prototype['class'] = 'TwoLineElement';
 
             // Public API here
             return {
-                get: function (tleString) {
-                    return new TwoLineElement(tleString);
+                get: function (tle) {
+                    return new TwoLineElement(tle);
                 }
             };
         }

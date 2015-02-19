@@ -1,7 +1,9 @@
 //TODO: add ngdoc comments
 angular.module('angular-satellite')
-    .constant('NS_ELLIPSOID', {
+    .constant('NS_ELLIPSOIDS', {
+
         /**
+         * @name nsEllipsoid
          * @example:
          * ellipsoid name: {
          *     year: published year (Gregorian Calendar),
@@ -12,21 +14,25 @@ angular.module('angular-satellite')
          *     inverseFlattening: flattening factor
          * }
          */
+
         WGS84: {
             year: 1984,
             radius: {
                 equatorial: 6378137,
                 polar: 6356752.3142
             },
-            inverseFlattening: 298.257223563
+            inverseFlattening: 298.257223563,
+            'class': 'nsEllipsoid'
         },
+
         Maupertuis: {
             year: 1738,
             radius: {
                 equatorial: 6397300,
                 polar: 6363806.283
             },
-            inverseFlattening: 191
+            inverseFlattening: 191,
+            'class': 'nsEllipsoid'
         },
 
         Plessis: {
@@ -35,7 +41,8 @@ angular.module('angular-satellite')
                 equatorial: 6376523.0,
                 polar: 6355862.9333
             },
-            inverseFlattening: 308.64
+            inverseFlattening: 308.64,
+            'class': 'nsEllipsoid'
         },
 
         Everest: {
@@ -44,9 +51,10 @@ angular.module('angular-satellite')
                 equatorial: 6377299.365,
                 polar: 6356098.359
             },
-            inverseFlattening: 300.80172554
+            inverseFlattening: 300.80172554,
+            'class': 'nsEllipsoid'
         }
-
+    })
 
 // TODO: finish converting the historical ellipsoid definitions to objects
 //Everest 1830 Modified (1967)	6,377,304.063	6,356,103.0390	300.8017	West Malaysia & Singapore
@@ -69,4 +77,4 @@ angular.module('angular-satellite')
 //GRS-80 (1979)	6,378,137	6,356,752.3141	298.257222101	Global ITRS[2]
 //IERS (1989)	6,378,136	6,356,751.302	298.257
 //IERS (2003)[3]	6,378,136.6	6,356,751.9	298.25642
-    });
+;
