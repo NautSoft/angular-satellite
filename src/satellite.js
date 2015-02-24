@@ -9,18 +9,24 @@
 
 angular.module('angular-satellite', [
     'angular-satellite.twoLineElement',
-    'angular-satellite.geodetic'
+    'angular-satellite.geodetic',
+    'angular-satellite.satellite'
 ])
-    .factory('nsSatellite',['nsTwoLineElementFactory',
-        function (nsTwoLineElementFactory) {
+    .service('nsSatelliteService', [
+        '$log',
+        'nsSatelliteFactory',
+        function ($log, nsSatelliteFactory) {
+
+            $log.debug('nsSatelliteFactory: Init');
+            $log.debug(nsSatelliteFactory.get());
+
 
             //public methods & properties
-            var self ={
-                tle: nsTwoLineElementFactory.get()
-            };
 
             //private methods and properties - should ONLY expose methods and properties publicly (via the 'return' object) that are supposed to be used; everything else (helper methods that aren't supposed to be called externally) should be private.
 
-            return self;
+            return {
+
+            };
         }
     ]);

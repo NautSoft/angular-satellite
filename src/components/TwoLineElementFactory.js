@@ -8,8 +8,8 @@
  * Component Factory for use in nsSatellite.
  */
 angular.module('angular-satellite.twoLineElement', [])
-    .factory('nsTwoLineElementFactory', [
-        function () {
+    .factory('nsTwoLineElementFactory', ['NS_ORBIT_TYPE',
+        function (NS_ORBIT_TYPE) {
 
             /**
              * @name angular-satellite.TwoLineElement
@@ -24,6 +24,7 @@ angular.module('angular-satellite.twoLineElement', [])
              * @constructor
              */
             function TwoLineElement(tle) {
+                var self = this;
 
                 var _name       = '',
                     _catNum     = 0,
@@ -172,10 +173,9 @@ angular.module('angular-satellite.twoLineElement', [])
 
                 /**
                  * @param {string} tle - Two Line Element String
-                 * @throws tle must be a string
                  * @private
                  */
-                function _load(tle) {
+                this.load = function (tle) {
                     if (!angular.isString(tle)) {
                         throw 'TwoLineElement: tle must be a string or null';
                     }
@@ -212,20 +212,72 @@ angular.module('angular-satellite.twoLineElement', [])
                     _meanAn     =           Number(line.substring(43,51) );
                     _meanMo     =           Number(line.substring(52,63) );
                     _orbitNum   =           Number(line.substring(63,68) );
-                }
+                };
 
-                this.load = _load;
+                /**
+                 *
+                 * @returns {{epoch: number, xndt2o: number, xndd6o: number, bstar: number,
+                 *           xincl: number, xnodeo: number, eo: number, omegao: number,
+                 *           xmo: number, xno: number, ephemeris: (NEAR_EARTH|DEEP_SPACE)}}
+                 * @notes:
+                 * Selects the appropriate ephemeris type to be used for predictions
+                 * according to the data in the TLE It also processes values in the
+                 * tle set so that they are appropriate for the sgp4/sdp4 routines
+                 */
+                this.selectEphemeris = function () {
+                    var satData = {
+                        epoch: 0,
+                        xndt2o: 0,
+                        xndd6o: 0,
+                        bstar: 0,
+                        xincl: 0,
+                        xnodeo: 0,
+                        eo: 0,
+                        omegao: 0,
+                        xmo: 0,
+                        xno: 0,
+                        ephemeris: NS_ORBIT_TYPE.NEAR_EARTH
+                    };
 
-                if (angular.isDefined(tle)) {
-                    _load(tle);
+                    var ao, xnodp, dd1, dd2, delo, temp, a1, del1, r1;
+
+                    // Pre-process tle set
+                    satData.xnodeo = NSMath.toRadians(this.getRightAscensionOfAscendingNode());
+                    satData.omegao = NSMath.toRadians(this.getArgumentOfPerigee());
+                    satData.xmo    = NSMath.toRadians(this.getMeanAnomaly());
+                    satData.xincl  = NSMath.toRadians(this.getInclination());
+                    temp = NSMath.PI_.X2 / NSMath.TIME.MIN_PER_DAY / NSMath.TIME.MIN_PER_DAY;
+
+                    satData.xno     = NSMath.getMeanMotion() * temp * NSMath.TIME.MIN_PER_DAY;
+                    satData.xndt2o  = this.getDrag() * temp;
+                    satData.xndd6o  = this.getBahnLatitude() * temp / NSMath.TIME.MIN_PER_DAY;
+                    satData.bstar   = this.getBStar() / NSMath.AE;
+
+                    // Period > 225 minutes is deep space
+                    dd1     = (NSMath.EARTH.XKE / satData.xno);
+                    dd2     = NSMath.TWO_THIRDS;
+                    a1      = Math.pow(dd1, dd2);
+                    r1      = Math.cos(satData.xincl);
+                    dd1     = 1.0 - this.getEccentricity() * this.getEccentricity();
+                    temp    = NSMath.CK2 * 1.5 * (r1 * r1 * 3.0 - 1.0) / Math.pow(dd1, 1.5);
+                    del1    = temp / (a1 * a1);
+                    ao      = a1 * (1.0 - del1 * (NSMath.TWO_THIRDS * 0.5 + del1 * (del1 * 1.654320987654321 + 1.0) ) );
+                    delo    = temp / (ao * ao);
+                    xnodp   = satData.xno / (delo + 1.0);
+
+                    // Select a deep-space/near-earth ephemeris
+                    satData.ephemeris =
+                        (NSMath.PI_.X2 / xnodp / NSMath.TIME.MIN_PER_DAY) < 0.15625
+                        ? NS_ORBIT_TYPE.NEAR_EARTH : NS_ORBIT_TYPE.DEEP_SPACE;
+
+                    return satData;
+                };
+
+                // Initialize
+                if (tle) {
+                    self.load(tle);
                 }
             }
-
-            /**
-             * @param {string} tle
-             * @const
-             */
-            TwoLineElement.prototype.load = function (tle) {};
 
             /**
              * @type {string}
@@ -235,7 +287,7 @@ angular.module('angular-satellite.twoLineElement', [])
 
             // Public API here
             return {
-                get: function (tle) {
+                $get: function (tle) {
                     return new TwoLineElement(tle);
                 }
             };
